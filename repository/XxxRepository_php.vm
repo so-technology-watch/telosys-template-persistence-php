@@ -29,6 +29,9 @@ class ${capEntityName}Repository
     }
 
     public function getAll() {
+		if(count($_SESSION['${uncapEntityName}MemoryPersist']) === 0) {
+            $_SESSION['${uncapEntityName}MemoryPersist'] = [];
+        }
         return ${_}_SESSION['${uncapEntityName}MemoryPersist'];
     }
 
