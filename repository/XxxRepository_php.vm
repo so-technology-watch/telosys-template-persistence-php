@@ -1,0 +1,102 @@
+<?php
+#set ( $_ = "$" )
+#set ( $uncapEntityName = ${fn.uncapitalize($entity.name)} )
+#set ( $capEntityName = ${fn.capitalize($entity.name)} )
+##
+#set( $entityKeyAttrs = "" )
+#set( $keyAttrCondition = "" )
+#foreach( $attribute in $entity.keyAttributes)
+#if( $foreach.count < 2 )
+#set( $entityKeyAttrs = "${_}"+${attribute.name} )
+#set( $keyAttrCondition = "${_}"+${uncapEntityName}+"->get"+${fn.capitalize($attribute.name)}+"() === "+${attribute.name} )
+#else
+#set( $entityKeyAttrs = $entityKeyAttrs + ", "+"${_}"+${attribute.name} )
+#set( $keyAttrCondition = $keyAttrCondition + "${_}" + ${uncapEntityName} + "->get" + ${fn.capitalize($attribute.name)} + "() === " + ${attribute.name} )
+#end ## end if
+#end ## end foreach
+##
+class ${capEntityName}Repository
+{
+    private ${_}${capEntityName}Controller;
+    private static ${_}_instance = null;
+
+    public function __construct()
+    {
+        session_id('MemoryPersist');
+        session_start();
+    }
+
+    public function getAll() {
+        return ${_}_SESSION['${uncapEntityName}MemoryPersist'];
+    }
+
+    public function getOne(${entityKeyAttrs}) {
+        ${_}result = '';
+        foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}${uncapEntityName} ){
+            if(${keyAttrCondition}) ${_}result = ${_}${uncapEntityName};
+            break;
+        }
+        return ${_}result;
+    }
+
+    public function create(${capEntityName} ${_}${uncapEntityName}) {
+        if(count(${_}_SESSION['${uncapEntityName}MemoryPersist']) != 0) {
+            ${_}cpt = 0;
+            foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}Entry ){
+                if(${_}Entry->getId() === ${_}${uncapEntityName}->getId()) {
+                    ${_}cpt++;
+                }
+            };
+
+            if(${_}cpt != 0) {
+                ${_}msg = 'Error : ${capEntityName} already exists.';
+            }
+            else {
+                array_push(${_}_SESSION['${uncapEntityName}MemoryPersist'], ${_}${uncapEntityName});
+                ${_}msg = '${capEntityName} creation successful';
+            }
+        }
+        else {
+            ${_}_SESSION['${uncapEntityName}MemoryPersist'] = [];
+            array_push(${_}_SESSION['${uncapEntityName}MemoryPersist'], ${_}${uncapEntityName});
+            ${_}msg = '${capEntityName} creation successful';
+        }
+        return ${_}msg;
+    }
+
+    public function update(${capEntityName} ${_}${uncapEntityName}) {
+        foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}Key => ${_}Entry ){
+            if($Entry->getId() === ${_}${uncapEntityName}->getId()) {
+                unset(${_}_SESSION['${uncapEntityName}MemoryPersist'][${_}Key]);
+                array_push(${_}_SESSION['${uncapEntityName}MemoryPersist'], ${_}${uncapEntityName});
+                ${_}msg = '${capEntityName} update successful';
+                break;
+            }
+            else {
+                ${_}msg = 'Error : ${capEntityName} not found.';
+            }
+        };
+        return ${_}msg;
+    }
+
+    public function delete(${entityKeyAttrs}) {
+        foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}Key => ${_}Entry ){
+            if(${_}Entry->getId() === $id) {
+                unset(${_}_SESSION['${uncapEntityName}MemoryPersist'][${_}Key]);
+                ${_}msg = '${capEntityName} deletion successful';
+                break;
+            }
+            else {
+                ${_}msg = 'Error : ${capEntityName} not found.';
+            }
+        };
+        return ${_}msg;
+    }
+
+    public static function getInstance() {
+        if(is_null(self::${_}_instance)) {
+            self::${_}_instance = new ${capEntityName}Repository();
+        }
+        return self::${_}_instance;
+    }
+}
