@@ -9,18 +9,17 @@
 #foreach( $attribute in $entity.keyAttributes)
 #if( $foreach.count < 2 )
 #set( $entityKeyAttrs = "${_}"+${attribute.name} )
-#set( $keyAttrCondition = "${_}"+${uncapEntityName}+"->get"+${fn.capitalize($attribute.name)}+"() === "+${attribute.name} )
-#set( $keyAttrCondition2 = "${_}"+${uncapEntityName}+"->get"+${fn.capitalize($attribute.name)}+"() === ${_}" + ${uncapEntityName} + "->get" + ${fn.capitalize($attribute.name)} )
+#set( $keyAttrCondition = "${_}Entry->get"+${fn.capitalize($attribute.name)}+"() === ${_}"+${attribute.name} )
+#set( $keyAttrCondition2 = "${_}Entry->get"+${fn.capitalize($attribute.name)}+"() === ${_}" + ${uncapEntityName} + "->get" + ${fn.capitalize($attribute.name)}+"()" )
 #else
 #set( $entityKeyAttrs = $entityKeyAttrs + ", "+"${_}"+${attribute.name} )
-#set( $keyAttrCondition = $keyAttrCondition + "${_}Entry->get" + ${fn.capitalize($attribute.name)} + "() === " + ${attribute.name} )
-#set( $keyAttrCondition2 = $keyAttrCondition2 + "${_}Entry->get" + ${fn.capitalize($attribute.name)} + "() === ${_}" + ${uncapEntityName} + "->get" + ${fn.capitalize($attribute.name)} )
+#set( $keyAttrCondition = $keyAttrCondition + "&& ${_}Entry->get" + ${fn.capitalize($attribute.name)} + "() === ${_}" + ${attribute.name} )
+#set( $keyAttrCondition2 = $keyAttrCondition2 + "&& ${_}Entry->get" + ${fn.capitalize($attribute.name)} + "() === ${_}" + ${uncapEntityName} + "->get" + ${fn.capitalize($attribute.name)}+"()" )
 #end ## end if
 #end ## end foreach
 ##
 class ${capEntityName}Repository
 {
-    private ${_}${capEntityName}Controller;
     private static ${_}_instance = null;
 
     public function __construct()
@@ -36,7 +35,7 @@ class ${capEntityName}Repository
     public function getOne(${entityKeyAttrs}) {
         ${_}result = '';
         foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}Entry ){
-            if(${keyAttrCondition}) ${_}result = ${_}${uncapEntityName};
+            if(${keyAttrCondition}) ${_}result = ${_}Entry;
             break;
         }
         return ${_}result;
