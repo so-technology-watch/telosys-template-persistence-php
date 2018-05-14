@@ -36,7 +36,7 @@ class ${capEntityName}Repository
     }
 
     public function getOne(${entityKeyAttrs}) {
-        ${_}result = '';
+        ${_}result = "Error : ${capEntityName} not found.";
         foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}Entry ){
             if(${keyAttrCondition}) ${_}result = ${_}Entry;
             break;
