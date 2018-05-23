@@ -13,8 +13,8 @@
 #set( $keyAttrCondition2 = "${_}Entry->get"+${fn.capitalize($attribute.name)}+"() === ${_}" + ${uncapEntityName} + "->get" + ${fn.capitalize($attribute.name)}+"()" )
 #else
 #set( $entityKeyAttrs = $entityKeyAttrs + ", "+"${_}"+${attribute.name} )
-#set( $keyAttrCondition = $keyAttrCondition + "&& ${_}Entry->get" + ${fn.capitalize($attribute.name)} + "() === ${_}" + ${attribute.name} )
-#set( $keyAttrCondition2 = $keyAttrCondition2 + "&& ${_}Entry->get" + ${fn.capitalize($attribute.name)} + "() === ${_}" + ${uncapEntityName} + "->get" + ${fn.capitalize($attribute.name)}+"()" )
+#set( $keyAttrCondition = $keyAttrCondition + " && ${_}Entry->get" + ${fn.capitalize($attribute.name)} + "() === ${_}" + ${attribute.name} )
+#set( $keyAttrCondition2 = $keyAttrCondition2 + " && ${_}Entry->get" + ${fn.capitalize($attribute.name)} + "() === ${_}" + ${uncapEntityName} + "->get" + ${fn.capitalize($attribute.name)}+"()" )
 #end ## end if
 #end ## end foreach
 ##
