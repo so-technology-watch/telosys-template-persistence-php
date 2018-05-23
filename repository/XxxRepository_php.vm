@@ -18,9 +18,17 @@
 #end ## end if
 #end ## end foreach
 ##
+// Entity repository (data persistence)
 class ${capEntityName}Repository
 {
     private static ${_}_instance = null;
+
+    public static function getInstance() {
+        if(is_null(self::${_}_instance)) {
+            self::${_}_instance = new ${capEntityName}Repository();
+        }
+        return self::${_}_instance;
+    }
 
     public function __construct()
     {
@@ -28,13 +36,22 @@ class ${capEntityName}Repository
         session_start();
     }
 
+    /**
+     * Get all entities method
+     * @return array
+     */
     public function getAll() {
-		if(count($_SESSION['${uncapEntityName}MemoryPersist']) === 0) {
+		if(!isset($_SESSION['${uncapEntityName}MemoryPersist'])) {
             $_SESSION['${uncapEntityName}MemoryPersist'] = [];
         }
         return ${_}_SESSION['${uncapEntityName}MemoryPersist'];
     }
 
+    /**
+     * Get one entity by Id method
+     * @param ${_}id
+     * @return string
+     */
     public function getOne(${entityKeyAttrs}) {
         ${_}result = "Error : ${capEntityName} not found.";
         foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}Entry ){
@@ -44,6 +61,11 @@ class ${capEntityName}Repository
         return ${_}result;
     }
 
+    /**
+     * Create one entity method
+     * @param ${capEntityName} ${_}${uncapEntityName}
+     * @return string
+     */
     public function create(${capEntityName} ${_}${uncapEntityName}) {
         if(count(${_}_SESSION['${uncapEntityName}MemoryPersist']) != 0) {
             ${_}cpt = 0;
@@ -69,6 +91,11 @@ class ${capEntityName}Repository
         return ${_}msg;
     }
 
+    /**
+     * Update one entity method
+     * @param ${capEntityName} ${_}${uncapEntityName}
+     * @return string
+     */
     public function update(${capEntityName} ${_}${uncapEntityName}) {
         foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}Key => ${_}Entry ){
             if(${keyAttrCondition2}) {
@@ -84,6 +111,10 @@ class ${capEntityName}Repository
         return ${_}msg;
     }
 
+    /**
+     * Delete one entity method
+     * @return string
+     */
     public function delete(${entityKeyAttrs}) {
         foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}Key => ${_}Entry ){
             if(${keyAttrCondition}) {
@@ -96,12 +127,5 @@ class ${capEntityName}Repository
             }
         };
         return ${_}msg;
-    }
-
-    public static function getInstance() {
-        if(is_null(self::${_}_instance)) {
-            self::${_}_instance = new ${capEntityName}Repository();
-        }
-        return self::${_}_instance;
     }
 }

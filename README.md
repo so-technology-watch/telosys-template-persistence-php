@@ -23,7 +23,7 @@ This template is part of a Bundle (see the Telosys 3 MVC PHP Template and Telosy
 1. After being generated, this template provides you with a repository file for every entity present in your model (see "Usage:2").
 2. You can import each file in their corresponding Controller like this :  
 ```
-$this->EntityRepository = EntityRepository::getInstance();
+$this-><Entity>Repository = <Entity>Repository::getInstance();
 ```
 NOTE : You don't need to do this if you also use the Telosys 3 MVC PHP Template.
 
