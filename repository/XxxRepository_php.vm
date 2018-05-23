@@ -41,8 +41,8 @@ class ${capEntityName}Repository
      * @return array
      */
     public function getAll() {
-		if(!isset($_SESSION['${uncapEntityName}MemoryPersist'])) {
-            $_SESSION['${uncapEntityName}MemoryPersist'] = [];
+		if(!isset(${_}_SESSION['${uncapEntityName}MemoryPersist'])) {
+            ${_}_SESSION['${uncapEntityName}MemoryPersist'] = [];
         }
         return ${_}_SESSION['${uncapEntityName}MemoryPersist'];
     }
