@@ -3,18 +3,18 @@
 #set ( $uncapEntityName = ${fn.uncapitalize($entity.name)} )
 #set ( $capEntityName = ${fn.capitalize($entity.name)} )
 ##
-#set( $entityKeyAttrs = "" )
+#set( $entitykeyAttrs = "" )
 #set( $keyAttrCondition = "" )
 #set( $keyAttrCondition2 = "" )
 #foreach( $attribute in $entity.keyAttributes)
 #if( $foreach.count < 2 )
-#set( $entityKeyAttrs = "${_}"+${attribute.name} )
-#set( $keyAttrCondition = "${_}Entry->get"+${fn.capitalize($attribute.name)}+"() === ${_}"+${attribute.name} )
-#set( $keyAttrCondition2 = "${_}Entry->get"+${fn.capitalize($attribute.name)}+"() === ${_}" + ${uncapEntityName} + "->get" + ${fn.capitalize($attribute.name)}+"()" )
+#set( $entitykeyAttrs = "${_}"+${attribute.name} )
+#set( $keyAttrCondition = "${_}entry->get"+${fn.capitalize($attribute.name)}+"() === ${_}"+${attribute.name} )
+#set( $keyAttrCondition2 = "${_}entry->get"+${fn.capitalize($attribute.name)}+"() === ${_}" + ${uncapEntityName} + "->get" + ${fn.capitalize($attribute.name)}+"()" )
 #else
-#set( $entityKeyAttrs = $entityKeyAttrs + ", "+"${_}"+${attribute.name} )
-#set( $keyAttrCondition = $keyAttrCondition + " && ${_}Entry->get" + ${fn.capitalize($attribute.name)} + "() === ${_}" + ${attribute.name} )
-#set( $keyAttrCondition2 = $keyAttrCondition2 + " && ${_}Entry->get" + ${fn.capitalize($attribute.name)} + "() === ${_}" + ${uncapEntityName} + "->get" + ${fn.capitalize($attribute.name)}+"()" )
+#set( $entitykeyAttrs = $entitykeyAttrs + ", "+"${_}"+${attribute.name} )
+#set( $keyAttrCondition = $keyAttrCondition + " && ${_}entry->get" + ${fn.capitalize($attribute.name)} + "() === ${_}" + ${attribute.name} )
+#set( $keyAttrCondition2 = $keyAttrCondition2 + " && ${_}entry->get" + ${fn.capitalize($attribute.name)} + "() === ${_}" + ${uncapEntityName} + "->get" + ${fn.capitalize($attribute.name)}+"()" )
 #end ## end if
 #end ## end foreach
 ##
@@ -30,8 +30,7 @@ class ${capEntityName}Repository
         return self::${_}_instance;
     }
 
-    public function __construct()
-    {
+    public function __construct() {
         session_id('MemoryPersist');
         session_start();
     }
@@ -52,10 +51,10 @@ class ${capEntityName}Repository
      * @param ${_}id
      * @return string
      */
-    public function getOne(${entityKeyAttrs}) {
+    public function getOne(${entitykeyAttrs}) {
         ${_}result = "Error : ${capEntityName} not found.";
-        foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}Entry ){
-            if(${keyAttrCondition}) ${_}result = ${_}Entry;
+        foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}entry ){
+            if(${keyAttrCondition}) ${_}result = ${_}entry;
             break;
         }
         return ${_}result;
@@ -69,21 +68,18 @@ class ${capEntityName}Repository
     public function create(${capEntityName} ${_}${uncapEntityName}) {
         if(count(${_}_SESSION['${uncapEntityName}MemoryPersist']) != 0) {
             ${_}cpt = 0;
-            foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}Entry ){
+            foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}entry ){
                 if(${keyAttrCondition2}) {
                     ${_}cpt++;
                 }
             };
-
             if(${_}cpt != 0) {
                 ${_}msg = 'Error : ${capEntityName} already exists.';
-            }
-            else {
+            } else {
                 array_push(${_}_SESSION['${uncapEntityName}MemoryPersist'], ${_}${uncapEntityName});
                 ${_}msg = '${capEntityName} creation successful';
             }
-        }
-        else {
+        } else {
             ${_}_SESSION['${uncapEntityName}MemoryPersist'] = [];
             array_push(${_}_SESSION['${uncapEntityName}MemoryPersist'], ${_}${uncapEntityName});
             ${_}msg = '${capEntityName} creation successful';
@@ -97,14 +93,13 @@ class ${capEntityName}Repository
      * @return string
      */
     public function update(${capEntityName} ${_}${uncapEntityName}) {
-        foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}Key => ${_}Entry ){
+        foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}key => ${_}entry ){
             if(${keyAttrCondition2}) {
-                unset(${_}_SESSION['${uncapEntityName}MemoryPersist'][${_}Key]);
+                unset(${_}_SESSION['${uncapEntityName}MemoryPersist'][${_}key]);
                 array_push(${_}_SESSION['${uncapEntityName}MemoryPersist'], ${_}${uncapEntityName});
                 ${_}msg = '${capEntityName} update successful';
                 break;
-            }
-            else {
+            } else {
                 ${_}msg = 'Error : ${capEntityName} not found.';
             }
         };
@@ -115,14 +110,13 @@ class ${capEntityName}Repository
      * Delete one entity method
      * @return string
      */
-    public function delete(${entityKeyAttrs}) {
-        foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}Key => ${_}Entry ){
+    public function delete(${entitykeyAttrs}) {
+        foreach(${_}_SESSION['${uncapEntityName}MemoryPersist'] as ${_}key => ${_}entry ){
             if(${keyAttrCondition}) {
-                unset(${_}_SESSION['${uncapEntityName}MemoryPersist'][${_}Key]);
+                unset(${_}_SESSION['${uncapEntityName}MemoryPersist'][${_}key]);
                 ${_}msg = '${capEntityName} deletion successful';
                 break;
-            }
-            else {
+            } else {
                 ${_}msg = 'Error : ${capEntityName} not found.';
             }
         };
