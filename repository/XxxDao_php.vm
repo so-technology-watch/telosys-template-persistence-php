@@ -18,14 +18,14 @@
 #end ## end if
 #end ## end foreach
 ##
-// Entity repository (data persistence)
-class ${capEntityName}Repository
+// Entity dao (data persistence)
+class ${capEntityName}Dao
 {
     private static ${_}_instance = null;
 
     public static function getInstance() {
         if(is_null(self::${_}_instance)) {
-            self::${_}_instance = new ${capEntityName}Repository();
+            self::${_}_instance = new ${capEntityName}Dao();
         }
         return self::${_}_instance;
     }
